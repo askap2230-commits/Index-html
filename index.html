@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pendaftaran Event Kampus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+            --instagram: #e1306c;
+            --whatsapp: #25d366;
+            --facebook: #1877f2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar & Header */
+        nav {
+            background: #fff;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: flex-end;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .main-content { flex: 1; }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 1100px;
+            margin: 20px auto;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .container { flex-direction: row; align-items: flex-start; }
+            .info-section { flex: 1; }
+            .form-section { flex: 1.2; }
+        }
+
+        section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input, select {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;
+        }
+
+        button {
+            cursor: pointer; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; transition: 0.3s;
+        }
+
+        .btn-primary { background: var(--success); color: white; width: 100%; }
+        .btn-admin { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+
+        /* Admin Dashboard */
+        #adminDashboard { display: none; border: 2px dashed var(--primary); }
+
+        /* Footer & Social Media */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 24px;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .social-links a:hover { transform: translateY(-5px); }
+        .fa-instagram:hover { color: var(--instagram); }
+        .fa-whatsapp:hover { color: var(--whatsapp); }
+        .fa-facebook:hover { color: var(--facebook); }
+
+        /* Table */
+        .table-container { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <button class="btn-admin" id="loginBtn">Login Admin</button>
+    <button class="btn-danger" id="logoutBtn" style="display:none;">Logout Admin</button>
+</nav>
+
+<header>
+    <h1>Seminar Teknologi Nasional</h1>
+    <p>Inovasi Digital di Era Masa Depan</p>
+</header>
+
+<div class="main-content">
+    <div class="container">
+        <section id="adminDashboard" class="info-section">
+            <h3>Panel Admin</h3>
+            <p>Total Pendaftar: <strong id="adminTotal">0</strong></p>
+            <button class="btn-danger" onclick="resetData()" style="width: 100%;">Reset Semua Data</button>
+        </section>
+    </div>
+
+    <div class="container">
+        <section class="info-section">
+            <h2>Detail Kegiatan</h2>
+            <p><strong>📅 Tanggal:</strong> 20 Februari 2026</p>
+            <p><strong>📍 Lokasi:</strong> Auditorium Graha Sains</p>
+            <div style="background: #e8f4fd; padding: 10px; border-radius: 5px; border-left: 4px solid var(--accent);">
+                Sisa Kuota: <strong id="quotaLeft">50</strong> Kursi
+            </div>
+        </section>
+
+        <section class="form-section">
+            <h2>Form Pendaftaran</h2>
+            <form id="regForm">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="nama" placeholder="Nama Anda">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" id="email" placeholder="email@contoh.com">
+                </div>
+                <div class="form-group">
+                    <label>Nomor HP</label>
+                    <input type="text" id="hp" placeholder="08xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="kategori">
+                        <option value="">-- Pilih --</option>
+                        <option value="Mahasiswa">Mahasiswa</option>
+                        <option value="Umum">Umum</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Daftar Sekarang</button>
+            </form>
+        </section>
+    </div>
+
+    <div class="container">
+        <section style="width: 100%;">
+            <h3>Daftar Pendaftar Terkini</h3>
+            <div class="table-container">
+                <table id="pesertaTable">
+                    <thead>
+                        <tr><th>No</th><th>Nama</th><th>Email</th><th>Kategori</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 Panitia Seminar Teknologi Kampus</p>
+    <div class="social-links">
+        <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/628123456789" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://facebook.com" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
+    </div>
+</footer>
+
+<script>
+    const MAX_QUOTA = 50;
+    const ADMIN_PASS = "admin123";
+    let dataPeserta = [];
+
+    const regForm = document.getElementById('regForm');
+    const tableBody = document.querySelector('#pesertaTable tbody');
+    const quotaLeftEl = document.getElementById('quotaLeft');
+    const adminPanel = document.getElementById('adminDashboard');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    regForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const valNama = document.getElementById('nama').value.trim();
+        const valEmail = document.getElementById('email').value.trim();
+        const valHp = document.getElementById('hp').value.trim();
+        const valKat = document.getElementById('kategori').value;
+
+        if(!valNama || !valEmail || !valHp || !valKat) return alert("Mohon lengkapi data!");
+        if(dataPeserta.length >= MAX_QUOTA) return alert("Kuota penuh!");
+
+        dataPeserta.push({ nama: valNama, email: valEmail, kategori: valKat });
+        updateUI();
+        regForm.reset();
+        alert("Pendaftaran Berhasil!");
+    });
+
+    function updateUI() {
+        tableBody.innerHTML = "";
+        dataPeserta.forEach((p, i) => {
+            tableBody.innerHTML += `<tr><td>${i+1}</td><td>${p.nama}</td><td>${p.email}</td><td>${p.kategori}</td></tr>`;
+        });
+        quotaLeftEl.innerText = MAX_QUOTA - dataPeserta.length;
+        document.getElementById('adminTotal').innerText = dataPeserta.length;
+    }
+
+    loginBtn.addEventListener('click', () => {
+        if(prompt("Password Admin:") === ADMIN_PASS) {
+            adminPanel.style.display = "block";
+            loginBtn.style.display = "none";
+            logoutBtn.style.display = "block";
+        }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        adminPanel.style.display = "none";
+        loginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
+    });
+
+    function resetData() {
+        if(confirm("Hapus semua data?")) { dataPeserta = []; updateUI(); }
+    }
+</script>
+
+</body>
+</html>
